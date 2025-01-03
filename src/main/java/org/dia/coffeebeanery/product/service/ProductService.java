@@ -18,13 +18,18 @@ public class ProductService {
         return this.productRepository.findAll(pageable);
     }
     
+    public int getProductStock(Integer productId) {
+        return this.productRepository.findStockByProductId(productId);
+    }
+    
     public Product createProduct(Product product) {
         return this.productRepository.save(product);
     }
     
     public Product updateProduct(Integer productId, Product updatedProduct) {
         Product existingProduct = productRepository.findById(productId)
-                                                   .orElseThrow(() -> new IllegalArgumentException("ERROR: " + productId));
+                                                   .orElseThrow(() -> new IllegalArgumentException(
+                                                           "ERROR: " + productId));
         
         existingProduct.setProduct_name(updatedProduct.getProduct_name());
         existingProduct.setProduct_price(updatedProduct.getProduct_price());
@@ -37,4 +42,5 @@ public class ProductService {
     public void deleteProduct(Integer productId) {
         productRepository.deleteById(productId);
     }
+    
 }

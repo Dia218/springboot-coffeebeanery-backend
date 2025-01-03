@@ -25,7 +25,7 @@ public class Order {
     private Double total_price; //총 주문 금액
     
     @Enumerated(EnumType.STRING)
-    private OrderState orderState; //주문 상태
+    private OrderState order_state; //주문 상태
     
     @ManyToOne
     private Delivery delivery; //연결된 배송

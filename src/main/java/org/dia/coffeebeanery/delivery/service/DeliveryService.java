@@ -10,13 +10,12 @@ import org.springframework.stereotype.Service;
 public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
     
-    public Delivery updateDelivery(Integer deliveryId, Delivery updatedDelivery) {
+    public Delivery updateDeliveryInfo(Integer deliveryId, Delivery updatedDelivery) {
         Delivery existingDelivery = deliveryRepository.findById(deliveryId)
-                                                      .orElseThrow(() -> new IllegalArgumentException("ERROR: " + deliveryId));
+                                                      .orElseThrow(() -> new RuntimeException("Delivery not found"));
         
-        existingDelivery.setDelivery_number(updatedDelivery.getDelivery_number());
         existingDelivery.setDelivery_company(updatedDelivery.getDelivery_company());
-        existingDelivery.setDelivery_address(updatedDelivery.getDelivery_address());
+        existingDelivery.setDelivery_number(updatedDelivery.getDelivery_number());
         
         return deliveryRepository.save(existingDelivery);
     }

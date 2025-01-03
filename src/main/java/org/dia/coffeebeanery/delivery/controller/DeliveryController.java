@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class DeliveryController {
     private final DeliveryService deliveryService;
     
-    @PutMapping("/{deliveryId}") //수정
-    public Delivery updateProduct(@PathVariable Integer deliveryId, @RequestBody Delivery updatedDelivery) {
-        return deliveryService.updateDelivery(deliveryId, updatedDelivery);
+    @PutMapping("/admin/orders/{deliveryId}") //판매자용) 배송 정보 변경
+    public Delivery updateDeliveryInfo(@PathVariable Integer deliveryId, @RequestBody Delivery updatedDelivery) {
+        return deliveryService.updateDeliveryInfo(deliveryId, updatedDelivery);
     }
 }

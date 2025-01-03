@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum OrderState {
     ORDERED("주문 완료"),
     PREPARING("배송 준비 중"),
-    SHIPPED("배송 시작"),
+    SHIPPED("배송 접수"),
     DELIVERED("배송 완료"),
     CANCELLED("주문 취소");
     
