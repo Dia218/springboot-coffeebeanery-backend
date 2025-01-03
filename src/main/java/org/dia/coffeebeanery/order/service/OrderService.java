@@ -31,16 +31,30 @@ public class OrderService {
     }
     
     public Order createOrder(Order order) { //리팩토링 필요
+        checkOrderDetailStock(order);
+        setDelivery(order);
+        
+        // 주문 및 주문 상세 저장
+        order.setOrder_state(OrderState.ORDERED);  // 기본 주문 상태 '주문 완료'
+        order.setOrder_created_at(LocalDateTime.now()); // 주문 생성 시간 설정
+        order.setTotal_price(calculateTotalPrice(order)); // 총 주문 금액 계산
+        
+        order = orderRepository.save(order);
+        setOrderDetails(order);
+        return order;
+    }
+    
+    private void checkOrderDetailStock(Order order) {
         for (OrderDetail orderDetail : order.getOrderDetails()) {
             Product product = orderDetail.getProduct();
             
-            // 재고 부족 여부 확인
             if (product.getProduct_stock() < orderDetail.getProduct_quantity()) {
                 throw new RuntimeException("Insufficient stock for product: " + product.getProduct_name());
             }
         }
-        
-        // 배송 정보 생성
+    }
+    
+    private void setDelivery(Order order) {
         Delivery delivery = new Delivery();
         delivery.setDelivery_number(null); //운송장 번호 = 초기값 null
         delivery.setDelivery_company(null); //택배사 = 초기값 null
@@ -49,15 +63,9 @@ public class OrderService {
         
         delivery = deliveryRepository.save(delivery);
         order.setDelivery(delivery);
-        
-        // 주문 및 주문 상세 저장
-        order.setOrder_state(OrderState.ORDERED);  // 기본 주문 상태 '주문 완료'
-        order.setOrder_created_at(LocalDateTime.now()); // 주문 생성 시간 설정
-        order.setTotal_price(calculateTotalPrice(order)); // 총 주문 금액 계산
-        
-        order = orderRepository.save(order);
-        
-        // 주문 상세 저장
+    }
+    
+    private void setOrderDetails(Order order) {
         for (OrderDetail orderDetail : order.getOrderDetails()) {
             orderDetail.setOrder(order); // 해당 주문에 연결
             orderDetail.setOrder_price(orderDetail.getProduct()
@@ -67,8 +75,6 @@ public class OrderService {
             product.setProduct_stock(product.getProduct_stock() - orderDetail.getProduct_quantity());
             productRepository.save(product); // 재고 업데이트
         }
-        
-        return order;
     }
     
     private double calculateTotalPrice(Order order) {
